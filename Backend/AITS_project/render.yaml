@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: aits-backend
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        value: psua4*o1&+-r_5b=!#g*n9p)_oy0k+h4)sima0921u8ss%w(t2
+      - key: DEBUG
+        value: 'False'
+      - key: ALLOWED_HOSTS
+        value: aits-backend.onrender.com
