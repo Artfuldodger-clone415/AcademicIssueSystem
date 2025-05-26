@@ -9,7 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "psua4*o1&+-r_5b=!#g*n9p)_oy0k+h4)sima0921u8ss%w(t2")
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -30,7 +29,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     
     # Local apps
-    'issues',
+    'issues',  # Make sure this is here and your User model is in issues/models.py
 ]
 
 MIDDLEWARE = [
@@ -65,15 +64,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AITS_project.wsgi.application'
 
-# Database
+# ✅ Updated Database configuration with better SQLite handling
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {
+            'timeout': 20,
+            'check_same_thread': False,
+        },
     }
 }
 
-# Custom user model
+# ✅ Ensure database directory exists
+os.makedirs(os.path.dirname(DATABASES['default']['NAME']), exist_ok=True)
+
+# Custom user model - Make sure this matches your actual model
 AUTH_USER_MODEL = 'issues.User'
 
 # REST Framework settings
@@ -108,7 +114,6 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -119,8 +124,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Add this to your existing settings.py file
-
+# ✅ Enhanced logging to help debug database issues
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -149,6 +153,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
         'issues': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
@@ -156,6 +165,5 @@ LOGGING = {
         },
     },
 }
-
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
