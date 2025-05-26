@@ -29,6 +29,10 @@ class User(AbstractUser):
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
+    
+    # ✅ Explicitly set the table name to match what Django expects
+    class Meta:
+        db_table = 'issues_user'
 
 class Issue(models.Model):
     PENDING = 'pending'
